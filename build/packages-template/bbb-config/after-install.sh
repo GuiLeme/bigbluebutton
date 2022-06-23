@@ -4,11 +4,13 @@ set +x
 
 removeOldOverride() {
     service_name=$1
+    echo "it passed here: TESTE"
     # check if override file has been modified. If not it can be safely removed
     if [ -f "/etc/systemd/system/${service_name}.service.d/override.conf" ] ; then
         if echo "d32a00b9a2669b3fe757b8de3470e358  /etc/systemd/system/${service_name}.service.d/override.conf" | md5sum -c --quiet 2>/dev/null >/dev/null ; then
             rm -f "/etc/systemd/system/${service_name}.service.d/override.conf"
         fi
+        cat "/etc/systemd/system/${service_name}.service.d/override.conf"
     fi
     if [ -d "/etc/systemd/system/${service_name}.service.d" ]; then
         if [ $(ls "/etc/systemd/system/${service_name}.service.d" |wc -l) = 0 ]; then

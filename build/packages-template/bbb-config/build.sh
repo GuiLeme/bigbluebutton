@@ -48,6 +48,8 @@ mkdir -p staging/usr/share/bigbluebutton/nginx
 
 cp include_default.nginx staging/usr/share/bigbluebutton/
 
+. ./opts-$DISTRO.sh
+
 #
 # Build package
 fpm -s dir -C ./staging -n $PACKAGE \

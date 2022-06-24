@@ -48,39 +48,11 @@ mkdir -p staging/usr/share/bigbluebutton/nginx
 
 cp include_default.nginx staging/usr/share/bigbluebutton/
 
-# Overrides 
-
-mkdir -p staging/etc/systemd/system/bbb-apps-akka.service.d
-cat > staging/etc/systemd/system/bbb-apps-akka.service.d/override.conf <<HERE
-[Unit]
-Wants=redis-server.service
-After=redis-server.service
-HERE
-
-mkdir -p staging/etc/systemd/system/bbb-fsesl-akka.service.d
-cat > staging/etc/systemd/system/bbb-fsesl-akka.service.d/override.conf <<HERE
-[Unit]
-Wants=redis-server.service
-After=redis-server.service
-HERE
-
-
-mkdir -p staging/etc/systemd/system/bbb-transcode-akka.service.d
-cat > staging/etc/systemd/system/bbb-transcode-akka.service.d/override.conf <<HERE
-[Unit]
-Wants=redis-server.service
-After=redis-server.service
-HERE
-
-
-. ./opts-$DISTRO.sh
-
 #
 # Build package
 fpm -s dir -C ./staging -n $PACKAGE \
     --version $VERSION --epoch $EPOCH \
     --after-install after-install.sh \
-    --after-remove after-remove.sh \
     --description "BigBlueButton configuration utilities" \
     $DIRECTORIES \
     $OPTS \

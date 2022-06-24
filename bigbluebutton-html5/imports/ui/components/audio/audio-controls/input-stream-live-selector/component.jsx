@@ -263,6 +263,7 @@ class InputStreamLiveSelector extends Component {
       currentInputDeviceId,
       currentOutputDeviceId,
       isListenOnly,
+      isRTL,
     } = this.props;
 
     const inputDeviceList = !isListenOnly
@@ -309,10 +310,21 @@ class InputStreamLiveSelector extends Component {
               label={intl.formatMessage(intlMessages.changeAudioDevice)}
               hideLabel
               tabIndex={0}
+              rotate
             />
           </>
         )}
         actions={dropdownListComplete}
+        opts={{
+          id: 'default-dropdown-menu',
+          keepMounted: true,
+          transitionDuration: 0,
+          elevation: 3,
+          getContentAnchorEl: null,
+          fullwidth: 'true',
+          anchorOrigin: { vertical: 'top', horizontal: isRTL ? 'left' : 'right' },
+          transformOrigin: { vertical: 'bottom', horizontal: isRTL ? 'right' : 'left' },
+        }}
       />
     );
   }

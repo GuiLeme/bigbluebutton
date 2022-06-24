@@ -53,6 +53,7 @@ cp include_default.nginx staging/usr/share/bigbluebutton/
 fpm -s dir -C ./staging -n $PACKAGE \
     --version $VERSION --epoch $EPOCH \
     --after-install after-install.sh \
+    --after-remove after-remove.sh \
     --description "BigBlueButton configuration utilities" \
     $DIRECTORIES \
     $OPTS \

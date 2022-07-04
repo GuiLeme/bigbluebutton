@@ -418,15 +418,15 @@ start_bigbluebutton () {
 
     if systemctl list-units --full -all | grep -q $TOMCAT_USER.service; then
         TOMCAT_SERVICE=$TOMCAT_USER
+    fi
 
-        systemctl start $TOMCAT_SERVICE || {
+    systemctl start $TOMCAT_USER || {
             echo
-            echo "# Warning: $TOMCAT_SERVICE could not be started. Please, check BBB-LTI or BBB-Demo."
+            echo "# Warning: $TOMCAT_USER could not be started. Please, check BBB-LTI or BBB-Demo."
             echo "#     Run the command:"
-            echo "#       sudo journalctl -u $TOMCAT_SERVICE"
+            echo "#       sudo journalctl -u $TOMCAT_USER"
             echo "#     To better understand the ERROR"
         }
-    fi
 
     systemctl start nginx freeswitch $REDIS_SERVICE bbb-apps-akka bbb-fsesl-akka bbb-rap-resque-worker bbb-rap-starter.service bbb-rap-caption-inbox.service $HTML5 $WEBHOOKS $ETHERPAD $PADS $BBB_WEB $BBB_LTI
 

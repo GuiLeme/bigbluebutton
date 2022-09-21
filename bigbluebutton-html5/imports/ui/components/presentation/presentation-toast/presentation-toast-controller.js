@@ -291,7 +291,6 @@ export const ToastController = ({ intl }) => {
 		const uploadingPresentations = UploadingPresentations.find().fetch();
 		let presentationsToConvert = convertingPresentations.concat(uploadingPresentations);
 
-		console.log("Teste pra saber quais são as presentations: -------> ", {presentationsToConvert: JSON.parse(JSON.stringify(presentationsToConvert)), alreadyRenderedPresList: JSON.parse(JSON.stringify(alreadyRenderedPresList)), presentationsRenderedFalseAndConversionFalse: JSON.parse(JSON.stringify(presentationsRenderedFalseAndConversionFalse))})
 		// Updating or populating the "state" presentation list
 		presentationsToConvert.map(p => {
 

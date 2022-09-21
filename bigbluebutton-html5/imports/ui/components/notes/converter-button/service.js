@@ -2,9 +2,7 @@ import Auth from '/imports/ui/services/auth';
 import PresentationUploaderService from '/imports/ui/components/presentation/presentation-uploader/service';
 import PadsService from '/imports/ui/components/pads/service';
 import NotesService from '/imports/ui/components/notes/service';
-import { makeCall } from '/imports/ui/services/api';
-import _ from 'lodash';
-import { Random } from 'meteor/random';
+import { UploadingPresentations } from '/imports/api/presentations';
 
 const PADS_CONFIG = Meteor.settings.public.pads;
 const PRESENTATION_CONFIG = Meteor.settings.public.presentation;
@@ -25,12 +23,20 @@ async function convertAndUpload() {
 
   if (duplicates !== 0) { filename = `${filename}(${duplicates})`; }
 
-  const podId = 'DEFAULT_PRESENTATION_POD';
-  const temporaryPresentationId = _.uniqueId(Random.id(20));
-
   const sharedNotesData = new File([data], `${filename}.${extension}`, {
     type: data.type,
   });
+
+  UploadingPresentations.insert({
+    progress: 0,
+    filename: sharedNotesData.name,
+    isFromSharedNotes: true,
+    upload: {
+      done: false,
+      error: false
+    },
+    uploadTimestamp: new Date()
+  })
 
   PresentationUploaderService.handleSavePresentation([], isFromPresentationUploaderInterface = false, {
     file: sharedNotesData,

@@ -89,7 +89,7 @@ const intlMessages = defineMessages({
     id: 'app.createBreakoutRoom.captureNotes',
     description: 'capture shared notes label',
   },
-  captureSlidesLabel: {
+  captureWhiteboardLabel: {
     id: 'app.createBreakoutRoom.captureSlides',
     description: 'capture slides label',
   },
@@ -97,7 +97,7 @@ const intlMessages = defineMessages({
     id: 'app.notes.label',
     description: 'indicates notes have been captured',
   },
-  captureSlidesType: {
+  captureWhiteboardType: {
     id: 'app.shortcut-help.whiteboard',
     description: 'indicates the whiteboard has been captured',
   },
@@ -224,7 +224,7 @@ class BreakoutRoom extends PureComponent {
     this.setInvitationConfig = this.setInvitationConfig.bind(this);
     this.setRecord = this.setRecord.bind(this);
     this.setCaptureNotes = this.setCaptureNotes.bind(this);
-    this.setCaptureSlides = this.setCaptureSlides.bind(this);
+    this.setCaptureWhiteboard = this.setCaptureWhiteboard.bind(this);
     this.blurDurationTime = this.blurDurationTime.bind(this);
     this.removeRoomUsers = this.removeRoomUsers.bind(this);
     this.renderErrorMessages = this.renderErrorMessages.bind(this);
@@ -246,7 +246,7 @@ class BreakoutRoom extends PureComponent {
       roomNameEmptyIsValid: true,
       record: false,
       captureNotes: false,
-      captureSlides: false,
+      captureWhiteboard: false,
       durationIsValid: true,
       breakoutJoinedUsers: null,
     };
@@ -289,7 +289,7 @@ class BreakoutRoom extends PureComponent {
     }
     this.setState({
       freeJoin: allowUserToChooseABreakoutByDefault,
-      captureSlides: captureWhiteboardByDefault,
+      captureWhiteboard: captureWhiteboardByDefault,
       captureNotes: captureNotesByDefault,
     });
 
@@ -422,7 +422,7 @@ class BreakoutRoom extends PureComponent {
       freeJoin,
       record,
       captureNotes,
-      captureSlides,
+      captureWhiteboard,
       numberOfRoomsIsValid,
       numberOfRooms,
       durationTime,
@@ -469,7 +469,7 @@ class BreakoutRoom extends PureComponent {
       sequence: seq,
     }));
 
-    createBreakoutRoom(rooms, durationTime, record, captureNotes, captureSlides);
+    createBreakoutRoom(rooms, durationTime, record, captureNotes, captureWhiteboard);
     Session.set('isUserListOpen', true);
   }
 
@@ -610,8 +610,8 @@ class BreakoutRoom extends PureComponent {
     this.setState({ captureNotes: e.target.checked });
   }
 
-  setCaptureSlides(e) {
-    this.setState({ captureSlides: e.target.checked });
+  setCaptureWhiteboard(e) {
+    this.setState({ captureWhiteboard: e.target.checked });
   }
 
   getUserByRoom(room) {
@@ -649,7 +649,7 @@ class BreakoutRoom extends PureComponent {
     const presentations = PresentationUploaderService.getPresentations();
 
     const captureType = slides
-      ? intl.formatMessage(intlMessages.captureSlidesType)
+      ? intl.formatMessage(intlMessages.captureWhiteboardType)
       : intl.formatMessage(intlMessages.captureNotesType);
 
     const fileName = `${this.getRoomName(position,true)}_${captureType}`.replace(/ /g, '_');
@@ -1062,7 +1062,7 @@ class BreakoutRoom extends PureComponent {
       freeJoin,
       record,
       captureNotes,
-      captureSlides,
+      captureWhiteboard,
     } = this.state;
     return (
       <Styled.CheckBoxesContainer key="breakout-checkboxes">
@@ -1094,16 +1094,16 @@ class BreakoutRoom extends PureComponent {
         }
         {
           isImportPresentationWithAnnotationsFromBreakoutRoomsEnabled() ? (
-            <Styled.FreeJoinLabel htmlFor="captureSlidesBreakoutCheckbox" key="capture-slides-breakouts">
+            <Styled.FreeJoinLabel htmlFor="captureWhiteboardBreakoutCheckbox" key="capture-slides-breakouts">
               <Styled.FreeJoinCheckbox
-                id="captureSlidesBreakoutCheckbox"
+                id="captureWhiteboardBreakoutCheckbox"
                 type="checkbox"
-                onChange={this.setCaptureSlides}
-                checked={captureSlides}
-                aria-label={intl.formatMessage(intlMessages.captureSlidesLabel)}
+                onChange={this.setCaptureWhiteboard}
+                checked={captureWhiteboard}
+                aria-label={intl.formatMessage(intlMessages.captureWhiteboardLabel)}
               />
               <span aria-hidden>
-                {intl.formatMessage(intlMessages.captureSlidesLabel)}
+                {intl.formatMessage(intlMessages.captureWhiteboardLabel)}
               </span>
             </Styled.FreeJoinLabel>
           ) : null

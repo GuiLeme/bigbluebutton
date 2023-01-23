@@ -81,7 +81,7 @@ const intlMessages = defineMessages({
     id: 'app.createBreakoutRoom.room',
     description: 'breakout room',
   },
-  freeJoinLabel: {
+  allowUserToChooseABreakoutLabel: {
     id: 'app.createBreakoutRoom.freeJoin',
     description: 'free join label',
   },
@@ -235,7 +235,7 @@ class BreakoutRoom extends PureComponent {
       selectedId: '',
       users: [],
       durationTime: 15,
-      freeJoin: false,
+      allowUserToChooseABreakout: false,
       formFillLevel: 1,
       roomNamesChanged: [],
       roomSelected: 0,
@@ -288,7 +288,7 @@ class BreakoutRoom extends PureComponent {
       });
     }
     this.setState({
-      freeJoin: allowUserToChooseABreakoutByDefault,
+      allowUserToChooseABreakout: allowUserToChooseABreakoutByDefault,
       captureWhiteboard: captureWhiteboardByDefault,
       captureNotes: captureNotesByDefault,
     });
@@ -419,7 +419,7 @@ class BreakoutRoom extends PureComponent {
     } = this.props;
     const {
       users,
-      freeJoin,
+      allowUserToChooseABreakout,
       record,
       captureNotes,
       captureWhiteboard,
@@ -434,7 +434,7 @@ class BreakoutRoom extends PureComponent {
       return;
     }
 
-    if (users.length === this.getUserByRoom(0).length && !freeJoin) {
+    if (users.length === this.getUserByRoom(0).length && !allowUserToChooseABreakout) {
       this.setState({ leastOneUserIsValid: false });
       return;
     }
@@ -465,7 +465,7 @@ class BreakoutRoom extends PureComponent {
       captureSlidesFilename: this.getCaptureFilename(seq),
       shortName: this.getRoomName(seq),
       isDefaultName: !this.hasNameChanged(seq),
-      freeJoin,
+      freeJoin: allowUserToChooseABreakout,
       sequence: seq,
     }));
 
@@ -475,9 +475,9 @@ class BreakoutRoom extends PureComponent {
 
   onInviteBreakout() {
     const { getBreakouts, sendInvitation } = this.props;
-    const { users, freeJoin } = this.state;
+    const { users, allowUserToChooseABreakout } = this.state;
     const breakouts = getBreakouts();
-    if (users.length === this.getUserByRoom(0).length && !freeJoin) {
+    if (users.length === this.getUserByRoom(0).length && !allowUserToChooseABreakout) {
       this.setState({ leastOneUserIsValid: false });
       return;
     }
@@ -599,7 +599,7 @@ class BreakoutRoom extends PureComponent {
   }
 
   setFreeJoin(e) {
-    this.setState({ freeJoin: e.target.checked, leastOneUserIsValid: true });
+    this.setState({ allowUserToChooseABreakout: e.target.checked, leastOneUserIsValid: true });
   }
 
   setRecord(e) {
@@ -668,7 +668,7 @@ class BreakoutRoom extends PureComponent {
 
   changeUserRoom(userId, room) {
     const { intl } = this.props;
-    const { users, freeJoin } = this.state;
+    const { users, allowUserToChooseABreakout } = this.state;
 
     const idxUser = users.findIndex((user) => user.userId === userId.replace('roomUserItem-', ''));
 
@@ -682,7 +682,7 @@ class BreakoutRoom extends PureComponent {
 
     this.setState({
       users: usersCopy,
-      leastOneUserIsValid: (this.getUserByRoom(0).length !== users.length || freeJoin),
+      leastOneUserIsValid: (this.getUserByRoom(0).length !== users.length || allowUserToChooseABreakout),
     }, () => {
       addNewAlert(intl.formatMessage(intlMessages.movedUserLabel, { 0: userName, 1: room }))
     });
@@ -1059,7 +1059,7 @@ class BreakoutRoom extends PureComponent {
     } = this.props;
     if (isUpdate) return null;
     const {
-      freeJoin,
+      allowUserToChooseABreakout,
       record,
       captureNotes,
       captureWhiteboard,
@@ -1071,10 +1071,10 @@ class BreakoutRoom extends PureComponent {
             type="checkbox"
             id="freeJoinCheckbox"
             onChange={this.setFreeJoin}
-            checked={freeJoin}
-            aria-label={intl.formatMessage(intlMessages.freeJoinLabel)}
+            checked={allowUserToChooseABreakout}
+            aria-label={intl.formatMessage(intlMessages.allowUserToChooseABreakoutLabel)}
           />
-          <span aria-hidden>{intl.formatMessage(intlMessages.freeJoinLabel)}</span>
+          <span aria-hidden>{intl.formatMessage(intlMessages.allowUserToChooseABreakoutLabel)}</span>
         </Styled.FreeJoinLabel>
         {
           isBreakoutRecordable ? (

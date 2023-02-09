@@ -36,7 +36,7 @@ mkdir -p staging/usr/bin
 cp mkclean-0.8.10/release/gcc_linux_x64/mkclean staging/usr/bin
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 . ./opts-$DISTRO.sh
 
 

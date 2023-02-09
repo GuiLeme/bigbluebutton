@@ -19,7 +19,7 @@ for dir in $DIRS; do
 done
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 mkdir -p staging/usr/local/bigbluebutton/bbb-webrtc-sfu
 
 find -maxdepth 1 ! -path . ! -name staging $(printf "! -name %s " $(cat .build-files)) -exec cp -r {} staging/usr/local/bigbluebutton/bbb-webrtc-sfu/ \;

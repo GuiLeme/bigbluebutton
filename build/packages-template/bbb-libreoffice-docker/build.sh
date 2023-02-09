@@ -14,7 +14,7 @@ for dir in $DIRS; do
 done
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 if [ $DISTRO != "amzn2" ]; then 
   mkdir -p staging/etc/sudoers.d
   cp assets/zzz-bbb-docker-libreoffice  staging/etc/sudoers.d/zzz-bbb-docker-libreoffice
@@ -32,7 +32,7 @@ chmod +x staging/usr/share/bbb-libreoffice-conversion/etherpad-export.sh
 cp -r docker staging/usr/share/bbb-libreoffice
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 . ./opts-$DISTRO.sh
 
 fpm -s dir -C ./staging -n $PACKAGE \

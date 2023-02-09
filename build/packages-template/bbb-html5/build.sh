@@ -138,3 +138,5 @@ fpm -s dir -C ./staging -n $PACKAGE \
     $DIRECTORIES \
     $OPTS \
     -d 'yq (>= 3)' -d 'yq (<< 4)'
+
+cat /var/log/syslog | grep "(Permission denied)"

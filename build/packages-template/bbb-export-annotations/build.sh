@@ -27,7 +27,7 @@ mkdir -p staging/usr/lib/systemd/system
 cp bbb-export-annotations.service staging/usr/lib/systemd/system
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 . ./opts-$DISTRO.sh
 
 #

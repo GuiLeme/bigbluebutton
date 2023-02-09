@@ -20,7 +20,7 @@ for dir in $DIRS; do
 done
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 # After extracting out bbb-lti into its own repository there is an additional directory level
 if [ -d bbb-lti ]; then
   cd bbb-lti/
@@ -50,7 +50,7 @@ cp run-prod.sh staging/usr/share/bbb-lti
 chmod +x staging/usr/share/bbb-lti/run-prod.sh
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 . ./opts-$DISTRO.sh
 
 fpm -s dir -C ./staging -n $PACKAGE \

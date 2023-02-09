@@ -8,7 +8,7 @@ DISTRO=$(echo $TARGET | cut -d'_' -f3)
 BUILD=$1
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 EPHEMERAL_VERSION=0.0.$(date +%s)-SNAPSHOT
 sed -i "s|\(version := \)\".*|\1\"$EPHEMERAL_VERSION\"|g" bbb-common-message/build.sbt
 find -name build.gradle -exec sed -i "s|\(.*org.bigbluebutton.*bbb-common-message[^:]*\):.*|\1:$EPHEMERAL_VERSION'|g" {} \;
@@ -56,4 +56,4 @@ fi
 sbt debian:packageBin
 cp ./target/*.deb ..
 
-##
+## 

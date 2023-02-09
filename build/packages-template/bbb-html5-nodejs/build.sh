@@ -29,7 +29,7 @@ fi
 popd
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 fpm -s dir -t deb -C ./staging -n $PACKAGE \
     --version $VERSION --epoch $EPOCH \
     --description "Include a specific NodeJS version for bbb-html5" \

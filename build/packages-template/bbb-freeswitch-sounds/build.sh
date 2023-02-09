@@ -23,9 +23,9 @@ rm -rf staging
 #done
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 DESTDIR=staging
 CONFDIR=$DESTDIR/opt/freeswitch/etc/freeswitch
 

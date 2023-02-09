@@ -37,7 +37,7 @@ mkdir -p staging/usr/share/bigbluebutton/nginx
 cp playback.nginx staging/usr/share/bigbluebutton/nginx
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 . ./opts-$DISTRO.sh
 
 #

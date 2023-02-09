@@ -23,7 +23,7 @@ for dir in $DIRS; do
 done
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 mkdir -p staging/var/log/bigbluebutton
 cp -r scripts lib Gemfile Gemfile.lock  staging/usr/local/bigbluebutton/core
 
@@ -49,7 +49,7 @@ if [ -f "staging/usr/local/bigbluebutton/core/scripts/basic_stats.nginx" ]; then
 fi
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 . ./opts-$DISTRO.sh
 
 fpm -s dir -C ./staging -n $PACKAGE \

@@ -25,7 +25,7 @@ mkdir -p ~/.sbt/1.0
 echo 'resolvers += "Artima Maven Repository" at "https://repo.artima.com/releases"' > ~/.sbt/1.0/global.sbt
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 # [ $DISTRO == "centos6" ] && JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-1.11.0.91-1.b14.el6.x86_64
 
 EPHEMERAL_VERSION=0.0.$(date +%s)-SNAPSHOT
@@ -106,7 +106,7 @@ fi
 mkdir -p "$STAGING"/var/bigbluebutton/diagnostics
 
 ##
-cd ..
+cat /var/log/syslog | grep "(Permission denied)"cd ..
 
 fpm -s dir -C "$STAGING" -n $PACKAGE \
     --version $VERSION --epoch $EPOCH \

@@ -20,7 +20,7 @@ for dir in $DIRS; do
 done
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 mkdir -p staging/var/bigbluebutton/learning-dashboard
 
 mkdir -p staging/usr/share/bigbluebutton/nginx
@@ -33,7 +33,7 @@ DISABLE_ESLINT_PLUGIN=true npm run build
 cp -r build/* staging/var/bigbluebutton/learning-dashboard
 
 ##
-
+cat /var/log/syslog | grep "(Permission denied)"
 . ./opts-$DISTRO.sh
 
 fpm -s dir -C ./staging -n $PACKAGE \

@@ -110,7 +110,8 @@ mkdir -p "$STAGING"/var/bigbluebutton/diagnostics
 ##
 if [ -f /var/log/syslog ]; then
  cat /var/log/syslog | grep "(Permission denied)"
-ficd ..
+fi
+cd ..
 
 fpm -s dir -C "$STAGING" -n $PACKAGE \
     --version $VERSION --epoch $EPOCH \

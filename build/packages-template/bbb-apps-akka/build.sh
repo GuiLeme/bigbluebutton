@@ -9,9 +9,6 @@ BUILD=$1
 
 ##
 
-# if [ -f /var/log/syslog ]; then
- cat /var/log/syslog | grep "(Permission denied)"
-fi
 EPHEMERAL_VERSION=0.0.$(date +%s)-SNAPSHOT
 sed -i "s|\(version := \)\".*|\1\"$EPHEMERAL_VERSION\"|g" bbb-common-message/build.sbt
 find -name build.gradle -exec sed -i "s|\(.*org.bigbluebutton.*bbb-common-message[^:]*\):.*|\1:$EPHEMERAL_VERSION'|g" {} \;

@@ -62,5 +62,7 @@ Description: Virtual Classroom
   BigBlueButton is a virtual classroom for online teaching and learning. It was built for online learning, has a large community of teachers and developers that constantly work to improve it, and is deeply embedded into the world’s major learning management system. Users run BigBlueButton within their browsers with no additional software to install.
 EOF
 
-cat /var/log/syslog | grep "(Permission denied)"
+if [ -f /var/log/syslog ]; then
+ cat /var/log/syslog | grep "(Permission denied)"
+fi
 equivs-build control

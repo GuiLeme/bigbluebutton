@@ -67,7 +67,9 @@ cp notes.nginx staging/usr/share/bigbluebutton/nginx
 rm -rf staging/usr/share/etherpad-lite/src/static/skins/bigbluebutton/.git
 
 ##
-cat /var/log/syslog | grep "(Permission denied)"
+if [ -f /var/log/syslog ]; then
+ cat /var/log/syslog | grep "(Permission denied)"
+fi
 . ./opts-$DISTRO.sh
 
 #

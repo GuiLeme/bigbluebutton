@@ -20,7 +20,9 @@ for dir in $DIRS; do
 done
 
 ##
-cat /var/log/syslog | grep "(Permission denied)"
+if [ -f /var/log/syslog ]; then
+ cat /var/log/syslog | grep "(Permission denied)"
+fi
 mkdir -p staging/usr/local/bigbluebutton/core
 cp -r scripts staging/usr/local/bigbluebutton/core
 
@@ -31,7 +33,9 @@ mkdir -p staging/usr/share/bigbluebutton/nginx
 cp staging/usr/local/bigbluebutton/core/scripts/podcast.nginx staging/usr/share/bigbluebutton/nginx
 
 ##
-cat /var/log/syslog | grep "(Permission denied)"
+if [ -f /var/log/syslog ]; then
+ cat /var/log/syslog | grep "(Permission denied)"
+fi
 . ./opts-$DISTRO.sh
 
 #

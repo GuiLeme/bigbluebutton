@@ -27,7 +27,9 @@ mkdir -p staging/usr/lib/systemd/system
 cp bbb-pads.service staging/usr/lib/systemd/system
 
 ##
-cat /var/log/syslog | grep "(Permission denied)"
+if [ -f /var/log/syslog ]; then
+ cat /var/log/syslog | grep "(Permission denied)"
+fi
 . ./opts-$DISTRO.sh
 
 #

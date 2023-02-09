@@ -18,7 +18,9 @@ rm -rf $DESTDIR
 mkdir -p $DESTDIR
 
 ##
-cat /var/log/syslog | grep "(Permission denied)"
+if [ -f /var/log/syslog ]; then
+ cat /var/log/syslog | grep "(Permission denied)"
+fi
 . ./opts-$DISTRO.sh
 
 cp modules.conf $BUILDDIR/freeswitch

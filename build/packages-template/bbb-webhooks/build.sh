@@ -19,7 +19,9 @@ for dir in $DIRS; do
 done
 
 ##
-cat /var/log/syslog | grep "(Permission denied)"
+if [ -f /var/log/syslog ]; then
+ cat /var/log/syslog | grep "(Permission denied)"
+fi
 mkdir -p staging/usr/local/bigbluebutton/bbb-webhooks
 
 find -maxdepth 1 ! -path . ! -name staging $(printf "! -name %s " $(cat .build-files)) -exec cp -r {} staging/usr/local/bigbluebutton/bbb-webhooks/ \;
@@ -35,7 +37,9 @@ mkdir -p staging/usr/lib/systemd/system
 cp bbb-webhooks.service staging/usr/lib/systemd/system
 
 ##
-cat /var/log/syslog | grep "(Permission denied)"
+if [ -f /var/log/syslog ]; then
+ cat /var/log/syslog | grep "(Permission denied)"
+fi
 . ./opts-$DISTRO.sh
 
 fpm -s dir -C ./staging -n $PACKAGE                 \

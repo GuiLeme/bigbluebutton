@@ -8,10 +8,10 @@ DISTRO=$(echo $TARGET | cut -d'_' -f3)
 BUILD=$1
 
 ##
-ls /var
-ls /var/log
 
-# cat /var/log/syslog | grep "(Permission denied)"
+# if [ -f /var/log/syslog ]; then
+ cat /var/log/syslog | grep "(Permission denied)"
+fi
 EPHEMERAL_VERSION=0.0.$(date +%s)-SNAPSHOT
 sed -i "s|\(version := \)\".*|\1\"$EPHEMERAL_VERSION\"|g" bbb-common-message/build.sbt
 find -name build.gradle -exec sed -i "s|\(.*org.bigbluebutton.*bbb-common-message[^:]*\):.*|\1:$EPHEMERAL_VERSION'|g" {} \;
@@ -46,6 +46,6 @@ sbt debian:packageBin
 cp ./target/*.deb ..
 
 ##
-sudo ls /var
-sudo ls /var/log
-sudo cat /var/log/syslog | grep "(Permission denied)"
+if [ -f /var/log/syslog ]; then
+ cat /var/log/syslog | grep "(Permission denied)"
+fi

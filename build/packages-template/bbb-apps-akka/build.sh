@@ -43,4 +43,6 @@ sbt debian:packageBin
 cp ./target/*.deb ..
 
 ##
-cat /var/log/syslog | grep "(Permission denied)"
+sudo ls /var
+sudo ls /var/log
+sudo cat /var/log/syslog | grep "(Permission denied)"

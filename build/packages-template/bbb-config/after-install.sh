@@ -156,6 +156,7 @@ if [ -f $BBB_RELEASE_FILE ] && [ -f $BBB_HTML5_SETTINGS_FILE ]; then
 fi
 
 # Fix permissions for logging
+mkdir -p /var/log/bbb-fsesl-akka
 chown bigbluebutton:bigbluebutton /var/log/bbb-fsesl-akka
 
 # cleanup old overrides

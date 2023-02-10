@@ -55,6 +55,7 @@ if [[ -n $EPOCH && $EPOCH -gt 0 ]] ; then
 else
     echo 'version in Debian := "'1:$VERSION-$BUILD'"' >> build.sbt
 fi
+sbt update
 sbt debian:packageBin
 cp ./target/*.deb ..
 

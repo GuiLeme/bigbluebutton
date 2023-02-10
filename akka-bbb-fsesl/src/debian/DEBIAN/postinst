@@ -1,3 +1,4 @@
+#!/bin/sh
 #
 # Update ESL password to match the password from bbb-freeswitch-core, which is
 # listed as a package dependency to ensure that it configures first.

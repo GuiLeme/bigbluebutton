@@ -262,6 +262,12 @@ public:
     # string will be returned.
     fallbackOnEmptyLocaleString: true
     disableWebsocketFallback: true
+  plugins:
+    - whiteboardAiIntegration:
+      name: whiteboardAiIntegration
+      url: /assets/whiteboardAiIntegration
+  bbbAiIntegration:
+    url: /bbb-ai-integration
   externalVideoPlayer:
     enabled: true
   kurento:

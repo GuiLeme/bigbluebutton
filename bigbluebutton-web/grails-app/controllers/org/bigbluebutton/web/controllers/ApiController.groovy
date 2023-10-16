@@ -21,6 +21,7 @@ package org.bigbluebutton.web.controllers
 import com.google.gson.Gson
 import grails.web.context.ServletContextHolder
 import groovy.json.JsonBuilder
+import groovy.xml.MarkupBuilder
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FilenameUtils
@@ -1385,9 +1386,30 @@ class ApiController {
     }
 
     Boolean isDefaultPresentationUsed = false;
-    Boolean isDefaultPresentationCurrent = false;
     def listOfPresentation = []
     def presentationListHasCurrent = false
+    Boolean hasPresentationModule = false;
+    Boolean hasPresentationUrlInParameter = false
+
+
+    String[] pu = request.getParameterMap().get("presentationURL")
+    if (pu != null) {
+      String presentationURL = pu[0]
+      hasPresentationUrlInParameter = true
+      def xmlString = new StringWriter()
+      def xml = new MarkupBuilder(xmlString)
+      xml.document (
+        removable: "true",
+        downloadable: "false",
+        url: presentationURL,
+        filename: extractFilenameFromUrl(presentationURL),
+        name: extractFilenameFromUrl(presentationURL)
+      )
+
+      def parsedXml = new XmlSlurper().parseText(xmlString.toString())
+
+      listOfPresentation << parsedXml
+    }
 
     // This part of the code is responsible for organize the presentations in a certain order
     // It selects the one that has the current=true, and put it in the 0th place.
@@ -1397,10 +1419,16 @@ class ApiController {
         log.warn("Insert Document API called without a payload - ignoring")
         return;
       }
-      listOfPresentation << [name: "default", current: true];
+      if (hasPresentationUrlInParameter) {
+        if (!preUploadedPresentationOverrideDefault) {
+          listOfPresentation << [name: "default", current: false]
+        }
+      } else {
+        listOfPresentation << [name: "default", current: true]
+      }
+
     } else {
-      Boolean hasCurrent = false;
-      Boolean hasPresentationModule = false;
+      Boolean hasCurrent = hasPresentationUrlInParameter
       if (xmlModules.containsKey("presentation")) {
         def modulePresentation = xmlModules.get("presentation")
         hasPresentationModule = true
@@ -1416,7 +1444,7 @@ class ApiController {
 
         Boolean uploadDefault = !preUploadedPresentationOverrideDefault && !isDefaultPresentationUsed && !isFromInsertAPI;
         if (uploadDefault) {
-          isDefaultPresentationCurrent = !hasCurrent;
+          def isDefaultPresentationCurrent = !hasCurrent
           hasCurrent = true
           isDefaultPresentationUsed = true
           if (isDefaultPresentationCurrent) {
@@ -1426,7 +1454,7 @@ class ApiController {
           }
         }
       }
-      if (!hasPresentationModule) {
+      if (!hasPresentationModule || (!hasPresentationUrlInParameter && !preUploadedPresentationOverrideDefault)) {
         hasCurrent = true
         listOfPresentation.add(0, [name: "default", current: true])
       }
@@ -1489,6 +1517,10 @@ class ApiController {
       }
     }
     return true
+  }
+
+  def extractFilenameFromUrl(String url) {
+    return url.split('/')[-1]
   }
 
   def processRequestXmlModules(String requestBody) {

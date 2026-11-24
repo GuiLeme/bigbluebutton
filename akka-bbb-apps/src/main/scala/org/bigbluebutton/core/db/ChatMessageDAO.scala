@@ -84,6 +84,37 @@ object ChatMessageDAO {
     ChatUserDAO.updateChatVisible(meetingId, chatId, visible = true)
   }
 
+  // A message brought back from a saved room state keeps its original sender
+  // name and time. The sender is not a user of this meeting, hence no senderId.
+  def insertRestored(meetingId: String, chatId: String, groupChatMessage: GroupChatMessage) = {
+    DatabaseConnection.enqueue(
+      TableQuery[ChatMessageDbTableDef].forceInsert(
+        ChatMessageDbModel(
+          messageId = groupChatMessage.id,
+          chatId = chatId,
+          meetingId = meetingId,
+          correlationId = groupChatMessage.correlationId,
+          chatEmphasizedText = groupChatMessage.chatEmphasizedText,
+          message = Some(groupChatMessage.message),
+          messageAsHtml = Some(groupChatMessage.messageAsHtml),
+          messageType = groupChatMessage.messageType,
+          replyToMessageId = groupChatMessage.replyToMessageId match {
+            case "" => None
+            case messageId => Some(messageId)
+          },
+          messageMetadata = Some(JsonUtils.mapToJson(groupChatMessage.metadata).compactPrint),
+          senderId = None,
+          senderName = groupChatMessage.sender.name,
+          senderRole = Some(groupChatMessage.sender.role),
+          createdAt = new java.sql.Timestamp(groupChatMessage.timestamp),
+          editedAt = None,
+          deletedByUserId = None,
+          deletedAt = None,
+        )
+      )
+    )
+  }
+
   def insertSystemMsg(meetingId: String, chatId: String, message: String, messageAsHtml: String, messageType: String, messageMetadata: Map[String,Any], senderName: String) = {
     DatabaseConnection.enqueue(
       TableQuery[ChatMessageDbTableDef].forceInsert(

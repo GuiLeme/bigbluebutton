@@ -20,6 +20,7 @@ import org.bigbluebutton.core.apps.pads.{ PadsApp2x, PadslHdlrHelpers }
 import org.bigbluebutton.core.apps.screenshare.ScreenshareApp2x
 import org.bigbluebutton.core.apps.audiocaptions.AudioCaptionsApp2x
 import org.bigbluebutton.core.apps.timer.TimerApp2x
+import org.bigbluebutton.core.apps.meetingstate.MeetingStateApp
 import org.bigbluebutton.core.apps.presentation.PresentationApp2x
 import org.bigbluebutton.core.apps.users.UsersApp2x
 import org.bigbluebutton.core.apps.webcam.{ CameraHdlrHelpers, WebcamApp2x }
@@ -148,6 +149,7 @@ class MeetingActor(
   val webcamApp2x = new WebcamApp2x
   val wbApp = new WhiteboardApp2x
   val timerApp2x = new TimerApp2x
+  val meetingStateApp = new MeetingStateApp
   val pluginHdlrs = new PluginHdlrs
   val mediaGroupHdlrs = new MediaGroupHdlrs
 
@@ -691,7 +693,9 @@ class MeetingActor(
       case m: SetCurrentPresentationPubMsg =>
         state = presentationPodsApp.handle(m, state, liveMeeting, msgBus)
         updateUserLastActivity(m.header.userId)
-      case m: PresentationConversionCompletedSysPubMsg => state = presentationPodsApp.handle(m, state, liveMeeting, msgBus)
+      case m: PresentationConversionCompletedSysPubMsg =>
+        state = presentationPodsApp.handle(m, state, liveMeeting, msgBus)
+        state = meetingStateApp.handlePresentationConverted(m.body.presentation.id, state, liveMeeting, msgBus)
       case m: PdfConversionInvalidErrorSysPubMsg       => state = presentationPodsApp.handle(m, state, liveMeeting, msgBus)
       case m: SetCurrentPagePubMsg =>
         state = presentationPodsApp.handle(m, state, liveMeeting, msgBus)
@@ -752,6 +756,20 @@ class MeetingActor(
       case m: UserTypingPubMsg =>
         chatApp2x.handle(m, liveMeeting, msgBus)
         updateUserLastActivity(m.header.userId)
+
+      // Meeting state save / load
+      case m: SaveMeetingStateReqMsg =>
+        meetingStateApp.handle(m, state, liveMeeting, msgBus)
+        updateUserLastActivity(m.header.userId)
+      case m: RestoreMeetingStateBeginSysMsg =>
+        val restore = meetingStateApp.handle(m, state, liveMeeting, msgBus)
+        state = restore.state
+        if (restore.layoutChanged) sendBroadcastLayoutEvtMsg(m.header.userId)
+        if (restore.accepted) PadsApp2x.setPinned(outGW, liveMeeting, "notes", m.body.notesPinned)
+      case m: RestoreGroupChatMessagesSysMsg     => state = meetingStateApp.handle(m, state, liveMeeting, msgBus)
+      case m: RestoreWhiteboardAnnotationsSysMsg => meetingStateApp.handle(m, state, liveMeeting, msgBus)
+      case m: RestoreSharedNotesSysMsg           => meetingStateApp.handle(m, liveMeeting, msgBus)
+      case m: RestoreMeetingStateEndSysMsg       => meetingStateApp.handle(m, liveMeeting, msgBus)
 
       // Screenshare
       case m: ScreenshareRtmpBroadcastStartedVoiceConfEvtMsg =>

@@ -21,6 +21,7 @@ import {
 } from '/imports/ui/components/audio/audio-graphql/audio-controls/input-stream-live-selector/service';
 import connectionStatus from '/imports/ui/core/graphql/singletons/connectionStatus';
 import { useReactiveVar } from '@apollo/client';
+import useRoomStateMenu from '../room-state/hooks';
 
 const { isIphone } = deviceInfo;
 const { isSafari, isValidSafariVersion } = browserInfo;
@@ -74,27 +75,33 @@ const OptionsDropdownContainer = (props) => {
   const audioCaptionsActive = useStorageKey('audioCaptions') || false;
   const isDropdownOpen = useStorageKey('dropdownOpen');
   const connected = useReactiveVar(connectionStatus.getConnectedStatusVar());
+  // eslint-disable-next-line react/prop-types
+  const { items: roomStateItems, modal: roomStateModal } = useRoomStateMenu(!!props.amIModerator);
 
   return (
-    <OptionsDropdown {...{
-      isRTL,
-      optionsDropdownItems,
-      userLeaveMeeting,
-      audioCaptionsEnabled,
-      shortcuts: openOptions,
-      audioCaptionsActive,
-      isDropdownOpen,
-      handleToggleFullscreen: FullscreenService.toggleFullScreen,
-      audioCaptionsSet: (value) => setAudioCaptions(value),
-      isMobile: deviceInfo.isMobile,
-      noIOSFullscreen,
-      isBreakoutRoom: currentMeeting?.isBreakout,
-      isConnected: connected,
-      away,
-      handleToggleAFK,
-      ...props,
-    }}
-    />
+    <>
+      {roomStateModal}
+      <OptionsDropdown {...{
+        isRTL,
+        optionsDropdownItems,
+        userLeaveMeeting,
+        audioCaptionsEnabled,
+        shortcuts: openOptions,
+        audioCaptionsActive,
+        isDropdownOpen,
+        handleToggleFullscreen: FullscreenService.toggleFullScreen,
+        audioCaptionsSet: (value) => setAudioCaptions(value),
+        isMobile: deviceInfo.isMobile,
+        noIOSFullscreen,
+        isBreakoutRoom: currentMeeting?.isBreakout,
+        isConnected: connected,
+        away,
+        handleToggleAFK,
+        roomStateItems,
+        ...props,
+      }}
+      />
+    </>
   );
 };
 

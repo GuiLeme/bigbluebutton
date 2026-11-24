@@ -68,6 +68,9 @@ export interface App {
   enableLimitOfViewersInWebcam: boolean
   enableMultipleCameras: boolean
   enableCameraAsContent: boolean
+  roomState: {
+    enabled: boolean
+  }
   enableWebcamSelectorButton: boolean
   enableTalkingIndicator: boolean
   enableCameraBrightness: boolean

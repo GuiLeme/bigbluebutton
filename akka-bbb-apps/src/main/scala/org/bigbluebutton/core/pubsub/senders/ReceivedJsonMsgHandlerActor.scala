@@ -381,6 +381,20 @@ class ReceivedJsonMsgHandlerActor(
       case UserTypingPubMsg.NAME =>
         routeGenericMsg[UserTypingPubMsg](envelope, jsonNode)
 
+      // Meeting state save / load
+      case SaveMeetingStateReqMsg.NAME =>
+        routeGenericMsg[SaveMeetingStateReqMsg](envelope, jsonNode)
+      case RestoreMeetingStateBeginSysMsg.NAME =>
+        routeGenericMsg[RestoreMeetingStateBeginSysMsg](envelope, jsonNode)
+      case RestoreGroupChatMessagesSysMsg.NAME =>
+        routeGenericMsg[RestoreGroupChatMessagesSysMsg](envelope, jsonNode)
+      case RestoreWhiteboardAnnotationsSysMsg.NAME =>
+        routeGenericMsg[RestoreWhiteboardAnnotationsSysMsg](envelope, jsonNode)
+      case RestoreSharedNotesSysMsg.NAME =>
+        routeGenericMsg[RestoreSharedNotesSysMsg](envelope, jsonNode)
+      case RestoreMeetingStateEndSysMsg.NAME =>
+        routeGenericMsg[RestoreMeetingStateEndSysMsg](envelope, jsonNode)
+
       // Meeting
       case EndMeetingSysCmdMsg.NAME =>
         routeGenericMsg[EndMeetingSysCmdMsg](envelope, jsonNode)

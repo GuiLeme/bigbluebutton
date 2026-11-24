@@ -98,6 +98,13 @@ export function useIsTimerFeatureEnabled() {
   return useDisabledFeatures().indexOf('timer') === -1 && window.meetingClientSettings.public.timer.enabled;
 }
 
+export function useIsRoomStateEnabled() {
+  return (
+    useDisabledFeatures().indexOf('roomState') === -1
+    && (window.meetingClientSettings.public.app.roomState?.enabled ?? true)
+  );
+}
+
 export function useIsCameraAsContentEnabled() {
   return (
     useDisabledFeatures().indexOf('cameraAsContent') === -1

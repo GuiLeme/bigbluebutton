@@ -316,6 +316,14 @@ type Mutation {
 }
 
 type Mutation {
+  meetingStateSave(
+    jobId: String!
+    clientState: json!
+    download: Boolean
+  ): Boolean
+}
+
+type Mutation {
   meetingSetMuted(
     muted: Boolean!
     exceptPresenter: Boolean

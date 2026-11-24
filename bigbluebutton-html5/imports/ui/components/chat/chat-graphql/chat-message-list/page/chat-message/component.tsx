@@ -225,6 +225,19 @@ const messageRef = React.createRef<HTMLDivElement>();
 const ANIMATION_DURATION = 1000;
 const SCROLL_ANIMATION_DURATION = 500;
 
+const SAVED_ROOM_SENDER_COLOR = '#0F70D7';
+
+// A text message brought back from a saved room state (see the room state
+// feature) was written by someone who is not a user of this meeting: it has no
+// user, only the name and role its sender had.
+const isFromSavedRoom = (message?: Message | null): boolean => !!message
+  && message.user === null
+  && message.messageType === ChatMessageType.TEXT;
+
+// What tells two senders apart: users by their id, senders of a saved room by their name.
+const senderOf = (message?: Message | null): string | undefined => message?.user?.userId
+  ?? (isFromSavedRoom(message) ? `saved-room:${message?.senderName}` : undefined);
+
 const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
   previousMessage,
   lastSenderPreviousPage,
@@ -534,10 +547,10 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
 
   const pluginMessageNotCustom = (previousMessage?.messageType !== ChatMessageType.PLUGIN
     || !JSON.parse(previousMessage?.messageMetadata).custom);
-  let sameSender = ((previousMessage?.user?.userId
-    || lastSenderPreviousPage) === message?.user?.userId) && pluginMessageNotCustom;
+  let sameSender = ((senderOf(previousMessage)
+    || lastSenderPreviousPage) === senderOf(message)) && pluginMessageNotCustom;
   // System message doesn't have a user
-  const isSystemSender = message.user === null;
+  const isSystemSender = message.user === null && !isFromSavedRoom(message);
   const messageHighlight = MESSAGE_HIGHLIGHT.has(message.messageType as ChatMessageType);
   const messagesWithHeaders = SYSTEM_MESSAGES_WITH_HEADERS.has(message.messageType as ChatMessageType);
 
@@ -761,9 +774,9 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
       case ChatMessageType.TEXT:
       default:
         return {
-          name: message.user?.name,
-          color: message.user?.color,
-          isModerator: message.user?.isModerator,
+          name: message.user?.name ?? message.senderName,
+          color: message.user?.color ?? SAVED_ROOM_SENDER_COLOR,
+          isModerator: message.user?.isModerator ?? message.senderRole === 'MODERATOR',
           isSystemSender: false,
           showAvatar: true,
           showHeading: true,
@@ -814,8 +827,8 @@ const ChatMessage = React.forwardRef<ChatMessageRef, ChatMessageProps>(({
 
   sameSender = message.messageType === ChatMessageType.BREAKOUT_ROOM
     ? false
-    : ((previousMessage?.user?.userId
-      || lastSenderPreviousPage) === message?.user?.userId) && pluginMessageNotCustom;
+    : ((senderOf(previousMessage)
+      || lastSenderPreviousPage) === senderOf(message)) && pluginMessageNotCustom;
 
   const shouldRenderAvatar = messageContent.showAvatar
     && !sameSender

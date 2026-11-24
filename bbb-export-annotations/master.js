@@ -43,6 +43,13 @@ logger.info('Running bbb-export-annotations');
     const dropbox = path.join(config.shared.presAnnDropboxDir, jobId);
     fs.mkdirSync(dropbox, {recursive: true});
 
+    if (exportJob.jobType === 'MeetingStateSaveJob') {
+      // The room state archive needs no slide rendering: it has its own worker
+      fs.writeFileSync(path.join(dropbox, 'job'), job.element);
+      new WorkerStarter({jobId}).saveState().catch((err) => logger.error(err));
+      return waitForJobs();
+    }
+
     // Drop job into dropbox as JSON
     fs.writeFile(path.join(dropbox, 'job'), job.element, function(err) {
       if (err) {

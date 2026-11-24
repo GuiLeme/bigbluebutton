@@ -23,6 +23,13 @@
     "is_downloadable": "false",
     "msgName": "NewPresFileAvailableMsg"
   },
+  "roomState": {
+    "presentationDir": "/var/bigbluebutton",
+    "archiveName": "room-state.zip",
+    "sharedNotesAPI": "http://127.0.0.1:8787",
+    "sharedNotesTimeoutMs": 15000,
+    "maxPresentationsBytes": 209715200
+  },
   "bbbWebAPI": "http://127.0.0.1:8090",
   "redis": {
     "host": "127.0.0.1",

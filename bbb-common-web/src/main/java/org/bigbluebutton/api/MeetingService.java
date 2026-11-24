@@ -35,6 +35,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.bigbluebutton.api.domain.*;
+import org.bigbluebutton.api.roomstate.RoomStateRecordingService;
 import org.bigbluebutton.api.exception.PluginMalformedParametersException;
 import org.bigbluebutton.api.exception.PluginManifestChecksumMismatchException;
 import org.bigbluebutton.api.exception.PluginMetadataException;
@@ -89,6 +90,7 @@ public class MeetingService implements MessageListener {
   private final ConcurrentMap<String, UserSessionBasicData> removedSessions;
 
   private RecordingService recordingService;
+  private RoomStateRecordingService roomStateRecordingService;
   private LearningDashboardService learningDashboardService;
   private UserCleanupTimerTask userCleaner;
   private StunTurnService stunTurnService;
@@ -1016,6 +1018,8 @@ public class MeetingService implements MessageListener {
     if (m != null) {
       m.setForciblyEnded(true);
       processRecording(m);
+      // The room state its moderator saved, if any, becomes the "state" format of the recording.
+      if (roomStateRecordingService != null) roomStateRecordingService.publish(m);
       if (m.getMeetingKeepEvents()) {
         // The creation of the ended tag must occur after the creation of the
         // recorded tag to avoid concurrency issues at the recording scripts
@@ -1649,6 +1653,10 @@ public class MeetingService implements MessageListener {
   public void stop() {
     processMessage = false;
     userCleaner.stop();
+  }
+
+  public void setRoomStateRecordingService(RoomStateRecordingService s) {
+    roomStateRecordingService = s;
   }
 
   public void setRecordingService(RecordingService s) {

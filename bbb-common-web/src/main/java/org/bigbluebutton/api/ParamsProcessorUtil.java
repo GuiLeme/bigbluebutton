@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ParamsProcessorUtil {
+    private static final int MAX_ROOM_STATE_RECORD_IDS = 50;
     private static Logger log = LoggerFactory.getLogger(ParamsProcessorUtil.class);
 
     private static final String URLDECODER_SEPARATOR=",";
@@ -657,6 +658,19 @@ public class ParamsProcessorUtil {
                     .get(ApiParams.SHARED_NOTES_INITIAL_CONTENT_MARKDOWN_URL);
         }
 
+        // Record ids of the saved room states this meeting may load, as found by the
+        // front-end with getRecordings (recordings having a "state" format).
+        List<String> roomStateRecordIds = new ArrayList<>();
+        if (!StringUtils.isEmpty(params.get(ApiParams.ROOM_STATE_RECORD_IDS))) {
+            for (String recordId : params.get(ApiParams.ROOM_STATE_RECORD_IDS).split(",")) {
+                String id = recordId.trim();
+                if (Util.isMeetingIdValidFormat(id) && !roomStateRecordIds.contains(id)
+                        && roomStateRecordIds.size() < MAX_ROOM_STATE_RECORD_IDS) {
+                    roomStateRecordIds.add(id);
+                }
+            }
+        }
+
         boolean allowStartStoptRec = allowStartStopRecording;
         if (!StringUtils.isEmpty(params.get(ApiParams.ALLOW_START_STOP_RECORDING))) {
             try {
@@ -978,6 +992,7 @@ public class ParamsProcessorUtil {
                 .withSharedNotesInitialContentJsonUrl(sharedNotesInitialContentJsonUrl)
                 .withSharedNotesInitialContentMarkdown(sharedNotesInitialContentMarkdown)
                 .withSharedNotesInitialContentMarkdownUrl(sharedNotesInitialContentMarkdownUrl)
+                .withRoomStateRecordIds(roomStateRecordIds)
                 .withPresentationConversionCacheEnabled(presentationCacheEnabled)
                 .withRecordFullDurationMedia(_recordFullDurationMedia)
                 .withWebcamsOnlyForModerator(webcamsOnlyForMod)

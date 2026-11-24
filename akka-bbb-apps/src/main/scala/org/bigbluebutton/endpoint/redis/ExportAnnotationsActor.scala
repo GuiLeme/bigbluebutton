@@ -55,6 +55,8 @@ class ExportAnnotationsActor(
     msg.core match {
       case m: StoreAnnotationsInRedisSysMsg => handleStoreAnnotationsInRedisSysMsg(m)
       case m: StoreExportJobInRedisSysMsg   => handleStoreExportJobInRedisSysMsg(m)
+      case m: StoreMeetingStateSaveJobInRedisSysMsg =>
+        redis.storeMeetingStateSaveJob(m.body.jobId, m.body.jobJson, m.body.stateJson)
 
       case _                                => // message not to be stored.
     }

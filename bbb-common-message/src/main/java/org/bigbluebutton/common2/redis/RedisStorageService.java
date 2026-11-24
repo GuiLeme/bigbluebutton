@@ -151,6 +151,19 @@ public class RedisStorageService extends RedisAwareCommunicator {
         commands.exec();
     }
 
+    /**
+     * Stores the collected state of a meeting under a short-lived key and queues
+     * the job that turns it into an archive (handled by bbb-export-annotations).
+     */
+    public void storeMeetingStateSaveJob(String jobId, String jobAsJson, String stateAsJson) {
+        RedisCommands<String, String> commands = connection.sync();
+
+        commands.multi();
+        commands.setex("meetingState:" + jobId, 600, stateAsJson);
+        commands.rpush("exportJobs", jobAsJson);
+        commands.exec();
+    }
+
     // @fixme: not used anywhere
     public void removeMeeting(String meetingId) {
         RedisCommands<String, String> commands = connection.sync();

@@ -6,6 +6,7 @@ const WorkerTypes = Object.freeze({
   Collector: 'collector',
   Process: 'process',
   Notifier: 'notifier',
+  StateSaver: 'state-saver',
 });
 
 const kickOffWorker = (workerType, workerData) => {
@@ -38,4 +39,5 @@ export default class WorkerStarter {
   collect = () => kickOffWorker(WorkerTypes.Collector, this.workerData);
   process = () => kickOffWorker(WorkerTypes.Process, this.workerData);
   notify = () => kickOffWorker(WorkerTypes.Notifier, this.workerData);
+  saveState = () => kickOffWorker(WorkerTypes.StateSaver, this.workerData);
 };

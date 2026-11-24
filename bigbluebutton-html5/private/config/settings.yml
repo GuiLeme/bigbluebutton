@@ -73,6 +73,10 @@ public:
     enableLimitOfViewersInWebcam: false
     enableMultipleCameras: true
     enableCameraAsContent: true
+    # Lets moderators save the room (chat, presentations and annotations, shared
+    # notes, layout) to a file and load such a file into a meeting
+    roomState:
+      enabled: true
     # Allow users to open webcam video modal/preview when video is already
     # active. This also allows to change virtual backgrounds without
     # restarting webcam.

@@ -42,6 +42,33 @@ with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
         <property name="gw" ref="bbbWebApiGWApp"/>
     </bean>
 
+    <bean id="roomStateLoadRateLimiter" class="org.bigbluebutton.api.util.RequestRateLimiter"
+          init-method="start" destroy-method="stop">
+        <!-- Keep the placeholder defaults in step with bigbluebutton.properties. -->
+        <property name="maxRequests" value="${roomStateLoadMaxRequests:10}"/>
+        <property name="windowSec" value="${roomStateLoadRateWindowSec:60}"/>
+    </bean>
+
+    <bean id="roomStateRecordingService" class="org.bigbluebutton.api.roomstate.RoomStateRecordingService">
+        <property name="presentationDir" value="${presentationDir}"/>
+        <property name="publishedDir" value="${publishedDir}"/>
+        <property name="serverUrl" value="${bigbluebutton.web.serverURL}"/>
+    </bean>
+
+    <bean id="roomStateRestoreService" class="org.bigbluebutton.api.roomstate.RoomStateRestoreService">
+        <property name="gw" ref="bbbWebApiGWApp"/>
+        <property name="presentationDir" value="${presentationDir}"/>
+        <property name="maxPresentationFileSize" value="${maxFileSizeUpload}"/>
+        <!-- Keep the placeholder defaults in step with bigbluebutton.properties. -->
+        <property name="maxZipSize" value="${roomStateMaxZipSize:209715200}"/>
+        <property name="maxUncompressedSize" value="${roomStateMaxUncompressedSize:524288000}"/>
+        <property name="maxEntries" value="${roomStateMaxEntries:2000}"/>
+        <property name="maxJsonEntrySize" value="${roomStateMaxJsonEntrySize:20971520}"/>
+        <property name="maxPresentations" value="${roomStateMaxPresentations:20}"/>
+        <property name="maxChatMessages" value="${roomStateMaxChatMessages:5000}"/>
+        <property name="maxAnnotationsPerPresentation" value="${roomStateMaxAnnotationsPerPresentation:50000}"/>
+    </bean>
+
     <bean id="insertDocumentRateLimiter" class="org.bigbluebutton.api.util.RequestRateLimiter"
           init-method="start" destroy-method="stop">
         <!-- Keep the placeholder defaults in step with bigbluebutton.properties. -->
@@ -60,6 +87,7 @@ with BigBlueButton; if not, see <http://www.gnu.org/licenses/>.
         <property name="redisStorageService" ref="redisStorageService"/>
         <property name="learningDashboardService" ref="learningDashboardService"/>
         <property name="recordingService" ref="recordingService"/>
+        <property name="roomStateRecordingService" ref="roomStateRecordingService"/>
         <property name="presDownloadService" ref="presDownloadService"/>
         <property name="paramsProcessorUtil" ref="paramsProcessorUtil"/>
         <property name="rejectedPresentationRegistry" ref="rejectedPresentationRegistry"/>

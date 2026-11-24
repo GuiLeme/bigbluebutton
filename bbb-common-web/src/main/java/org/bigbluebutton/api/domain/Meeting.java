@@ -71,6 +71,7 @@ public class Meeting {
 	private String sharedNotesInitialContentJsonUrl = "";
 	private ArrayList<Object> sharedNotesInitialContentJson;
 	private String sharedNotesInitialContentMarkdownUrl = "";
+	private List<String> roomStateRecordIds = new ArrayList<>();
 	private String sharedNotesInitialContentMarkdown = "";
 	private boolean presentationConversionCacheEnabled = false;
 	private boolean recordFullDurationMedia = false;
@@ -173,6 +174,7 @@ public class Meeting {
         allowStartStopRecording = builder.allowStartStopRecording;
 		sharedNotesInitialContentJsonUrl = builder.sharedNotesInitialContentJsonUrl;
 		sharedNotesInitialContentMarkdownUrl = builder.sharedNotesInitialContentMarkdownUrl;
+		roomStateRecordIds = Collections.unmodifiableList(new ArrayList<>(builder.roomStateRecordIds));
 		sharedNotesInitialContentMarkdown = builder.sharedNotesInitialContentMarkdown;
 		presentationConversionCacheEnabled = builder.presentationConversionCacheEnabled;
         recordFullDurationMedia = builder.recordFullDurationMedia;
@@ -621,6 +623,11 @@ public class Meeting {
 		sharedNotesInitialContentJson = initialContentJson;
 	}
 
+	// Record ids of the saved room states the moderators of this meeting may load.
+	public List<String> getRoomStateRecordIds() {
+		return roomStateRecordIds;
+	}
+
 	public String getSharedNotesInitialContentMarkdownUrl() {
 		return sharedNotesInitialContentMarkdownUrl;
 	}
@@ -953,6 +960,7 @@ public class Meeting {
         private boolean allowStartStopRecording;
 		private String sharedNotesInitialContentJsonUrl;
 		private String sharedNotesInitialContentMarkdownUrl;
+		private List<String> roomStateRecordIds = new ArrayList<>();
 		private String sharedNotesInitialContentMarkdown;
         private boolean presentationConversionCacheEnabled;
         private boolean webcamsOnlyForModerator;
@@ -1044,6 +1052,11 @@ public class Meeting {
     		this.sharedNotesInitialContentJsonUrl = initialContent;
     		return this;
     	}
+
+		public Builder withRoomStateRecordIds(List<String> recordIds) {
+			this.roomStateRecordIds = recordIds;
+			return this;
+		}
 
 		public Builder withSharedNotesInitialContentMarkdownUrl(String initialContent) {
 			this.sharedNotesInitialContentMarkdownUrl = initialContent;

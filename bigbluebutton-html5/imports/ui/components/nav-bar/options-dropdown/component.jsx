@@ -95,6 +95,9 @@ const propTypes = {
   handleToggleFullscreen: PropTypes.func.isRequired,
   noIOSFullscreen: PropTypes.bool,
   amIModerator: PropTypes.bool,
+  roomStateItems: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired,
+  })),
   shortcuts: PropTypes.string,
   isBreakoutRoom: PropTypes.bool,
   isConnected: PropTypes.bool.isRequired,
@@ -114,6 +117,7 @@ const propTypes = {
 const defaultProps = {
   noIOSFullscreen: true,
   amIModerator: false,
+  roomStateItems: [],
   shortcuts: '',
   isBreakoutRoom: false,
   isDropdownOpen: false,
@@ -197,7 +201,7 @@ class OptionsDropdown extends PureComponent {
     const {
       intl, amIModerator, isBreakoutRoom, isConnected, audioCaptionsEnabled,
       audioCaptionsActive, audioCaptionsSet, isMobile, optionsDropdownItems,
-      isDirectLeaveButtonEnabled,
+      isDirectLeaveButtonEnabled, roomStateItems,
     } = this.props;
 
     const { isIos } = deviceInfo;
@@ -257,6 +261,11 @@ class OptionsDropdown extends PureComponent {
           break;
       }
     });
+
+    // Save / load room state, for moderators
+    if (isConnected && roomStateItems.length > 0) {
+      this.menuItems.push({ key: 'list-item-room-state-separator', isSeparator: true }, ...roomStateItems);
+    }
 
     if (isConnected && !isDirectLeaveButtonEnabled) {
       const bottomItems = [{ key: 'list-item-separator', isSeparator: true }];

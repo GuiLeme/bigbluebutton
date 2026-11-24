@@ -16,7 +16,8 @@
     "redis": "^4.7.0",
     "sanitize-filename": "^1.6.3",
     "svgdom": "^0.1.26",
-    "wawoff2": "^2.0.1"
+    "wawoff2": "^2.0.1",
+    "yazl": "^3.3.1"
   },
   "devDependencies": {
     "eslint": "^8.20.0",

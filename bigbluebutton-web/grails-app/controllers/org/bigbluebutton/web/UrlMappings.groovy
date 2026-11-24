@@ -67,6 +67,34 @@ class UrlMappings {
       action = [GET: 'downloadFile']
     }
 
+    "/bigbluebutton/meetingState/save/$jobId/status"(controller: "meetingState") {
+      action = [GET: 'saveStatus']
+    }
+
+    "/bigbluebutton/meetingState/save/$jobId/download"(controller: "meetingState") {
+      action = [GET: 'saveDownload']
+    }
+
+    "/bigbluebutton/meetingState/states"(controller: "meetingState") {
+      action = [GET: 'savedStates']
+    }
+
+    "/bigbluebutton/meetingState/load/$loadId/saved"(controller: "meetingState") {
+      action = [POST: 'loadSaved']
+    }
+
+    "/bigbluebutton/api/getRoomState"(controller: "meetingState") {
+      action = [GET: 'getRoomState']
+    }
+
+    "/bigbluebutton/meetingState/load/$loadId/upload"(controller: "meetingState") {
+      action = [POST: 'loadUpload']
+    }
+
+    "/bigbluebutton/meetingState/load/$loadId/url"(controller: "meetingState") {
+      action = [POST: 'loadUrl']
+    }
+
     "/bigbluebutton/api/create"(controller: "api") {
       action = [GET: 'create', POST: 'create']
     }

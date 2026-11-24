@@ -466,6 +466,12 @@ const createEndpointTableData = [
     "description": (<>Url from which the shared-notes will fetch the initial content as markdown. When provided, it takes precedence over the inline `sharedNotesInitialContentMarkdown` create parameter and POST module. The URL must be `https` (`fetchUrlSupportedProtocols`), is capped by `maxSharedNotesInitialContentUrlPayloadSize` (default 1024 KiB) and has a 6000 ms timeout; a URL that violates these yields empty initial content silently. (added 3.0.33)</>)
   },
   {
+    "name": "roomStateRecordIDs",
+    "required": false,
+    "type": "String",
+    "description": (<>List (comma-separated, at most 50) of record IDs whose saved room state the moderators of this meeting can load from the <b>Load room state</b> dialog. A room state is saved by a moderator during a meeting created with `record=true` and is published when that meeting ends as a recording format named `state`, which `getRecordings` lists; pass the record IDs of the recordings having that format. The archive of a published state can be downloaded with the `getRoomState` API call (`recordID` and checksum).</>)
+  },
+  {
     "name": "disabledFeatures",
     "required": false,
     "type": "String",
@@ -621,6 +627,9 @@ const createEndpointTableData = [
             </li>
             <li>
               <code className="language-plaintext highlighter-rouge">lockSettings</code> - <b>Lock settings (added in BigBlueButton 4.0.3)</b> - no viewer restriction applies in the meeting or in its breakout rooms. The <code className="language-plaintext highlighter-rouge">lockSettings*</code> create parameters, <code className="language-plaintext highlighter-rouge">webcamsOnlyForModerator</code> and their server defaults are ignored (<code className="language-plaintext highlighter-rouge">lockSettingsPresenterPolicy</code> stays at <code className="language-plaintext highlighter-rouge">requireApproval</code>), and moderators cannot lock viewers during the meeting: the "Permissions and Policies" dialog keeps only its "Guest Policy" tab. Locking the public chat for a single user from the user list is still possible
+            </li>
+            <li>
+              <code className="language-plaintext highlighter-rouge">roomState</code> - <b>Saving and loading the room state</b> - moderators cannot save the presentations, whiteboard annotations, public chat, shared notes and layout of the meeting, nor load a saved state into the meeting (see <code className="language-plaintext highlighter-rouge">roomStateRecordIDs</code>).
             </li>
           </ul>
         </>

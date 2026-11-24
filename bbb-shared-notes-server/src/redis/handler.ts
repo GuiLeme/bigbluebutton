@@ -8,6 +8,7 @@ import path from 'node:path';
 import { uploadPresentation } from './service/uploadPresentation';
 import { documentNamePrefix } from '../hocuspocus/utils';
 import { pushInitialContent } from './service/pushInitialContent';
+import { replaceContent } from './service/replaceContent';
 import { markDocumentEnded } from '../hocuspocus/extensions/postgresql';
 
 const logger = new Logger('redis handler');
@@ -153,6 +154,27 @@ const handleSharedNotesCreate = async (header: MessageHeader, body: MessageBody)
   }
 
   sender.send('sharedNotesCreated', meetingId, { padId, externalId, model });
+};
+
+// A saved room state is being loaded into the meeting: its notes take the place
+// of the current ones.
+const handleSharedNotesReplaceContent = async (header: MessageHeader, body: MessageBody): Promise<void> => {
+  const { meetingId } = header;
+  const padId = `${documentNamePrefix}${meetingId}`;
+
+  const { userId, contentJson } = body;
+  if (typeof userId !== 'string' || userId.length === 0) {
+    logger.error('Shared notes content not replaced: no user given', { padId, meetingId });
+    return;
+  }
+
+  const statusReturn = await replaceContent(padId, contentJson, { intUserId: userId, meetingId });
+  if (statusReturn.error) {
+    logger.error('Shared notes content not replaced', {
+      logCode: statusReturn.statusCode,
+      extraInfo: { ...statusReturn, padId, meetingId },
+    });
+  }
 };
 
 const handleBlockNoteExport = async (header: MessageHeader, body: MessageBody): Promise<void> => {
@@ -355,6 +377,9 @@ const handler: PubSubHandler = {
           break;
         case 'BNSharedNotesCreateCmdMsg':
           await handleSharedNotesCreate(header, body);
+          break;
+        case 'BNSharedNotesReplaceContentCmdMsg':
+          await handleSharedNotesReplaceContent(header, body);
           break;
         case 'ExportBNSharedNotesEvtMsg':
           await handleBlockNoteExport(header, body);

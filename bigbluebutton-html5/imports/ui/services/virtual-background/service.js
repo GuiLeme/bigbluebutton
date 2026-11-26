@@ -120,7 +120,57 @@ const getSessionVirtualBackgroundInfoWithDefault = (deviceId) => getStorageSingl
 const removeSessionVirtualBackgroundInfo = (deviceId) => getStorageSingletonInstance()
   .removeItem(`VirtualBackgroundInfo_${deviceId}`);
 
-const isVirtualBackgroundSupported = () => !(deviceInfo.isIos || browserInfo.isSafari);
+const ENGINES = ['tflite', 'longpipe'];
+const ENGINE_STORAGE_KEY = 'bbb_virtual_background_engine';
+
+// Which implementation runs the effect: 'tflite' (TFLite in WebAssembly with
+// canvas compositing) or 'longpipe' (WebGPU/WebGL2). The default comes from
+// public.virtualBackgrounds.engine. For testing, a browser can override it by
+// opening the client with vbgEngine=longpipe or vbgEngine=tflite in the URL;
+// the choice is remembered in that browser until vbgEngine=default is given.
+// The URL is read here, when the client loads: the query string is removed
+// from the address bar soon after.
+try {
+  const fromUrl = new URLSearchParams(window.location.search).get('vbgEngine');
+  if (ENGINES.includes(fromUrl)) {
+    window.localStorage.setItem(ENGINE_STORAGE_KEY, fromUrl);
+  } else if (fromUrl === 'default') {
+    window.localStorage.removeItem(ENGINE_STORAGE_KEY);
+  }
+} catch (error) {
+  // No access to the URL or the storage: the configured engine is used.
+}
+
+const getVirtualBackgroundEngine = () => {
+  try {
+    const stored = window.localStorage.getItem(ENGINE_STORAGE_KEY);
+    if (ENGINES.includes(stored)) return stored;
+  } catch (error) {
+    // No access to the storage: use the configured engine.
+  }
+
+  const { engine } = window.meetingClientSettings.public.virtualBackgrounds;
+
+  return ENGINES.includes(engine) ? engine : 'tflite';
+};
+
+// Remembers the engine chosen in this browser (see the webcam settings).
+const setVirtualBackgroundEngine = (engine) => {
+  if (!ENGINES.includes(engine)) return;
+  try {
+    window.localStorage.setItem(ENGINE_STORAGE_KEY, engine);
+  } catch (error) {
+    // No access to the storage: the configured engine stays in use.
+  }
+};
+
+// The TFLite engine does not run on Safari or on iOS.
+const isVirtualBackgroundEngineSupported = (engine) => engine === 'longpipe'
+  || !(deviceInfo.isIos || browserInfo.isSafari);
+
+const isVirtualBackgroundSupported = () => isVirtualBackgroundEngineSupported(
+  getVirtualBackgroundEngine(),
+);
 
 const getVirtualBgImagePath = () => {
   const {
@@ -144,6 +194,9 @@ export {
   getCameraBrightnessInfoWithDefault,
   removeSessionVirtualBackgroundInfo,
   isVirtualBackgroundSupported,
+  getVirtualBackgroundEngine,
+  setVirtualBackgroundEngine,
+  isVirtualBackgroundEngineSupported,
   createVirtualBackgroundStream,
   getVirtualBackgroundThumbnail,
   getVirtualBgImagePath,

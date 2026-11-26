@@ -1403,6 +1403,19 @@ public:
     # willReadFrequently: Defines the optimization hint for the virtual background canvas.
     # If commented out (default), the browser decides the best strategy.
     #willReadFrequently: true
+    # engine: what runs the effect. 'tflite' is TFLite in WebAssembly with
+    # canvas compositing (not available on Safari or iOS); 'longpipe' is the
+    # Longpipe SDK on WebGPU/WebGL2. A browser can override this for testing by
+    # opening the client as /html5client/?vbgEngine=longpipe (or tflite, or
+    # default to go back to this setting) once joined.
+    engine: tflite
+    # longpipe: options for the 'longpipe' engine, all optional.
+    #   weightsBaseUrl: where the model weights are fetched from
+    #     (default: Longpipe's CDN)
+    #   preset: xs, small, medium, large or xl (default: chosen per device)
+    #   backend: webgpu or webgl2 (default: WebGPU when available)
+    #   debug: true logs Longpipe's internals to the browser console
+    longpipe: {}
     fileNames:
       - home.jpg
       - coffeeshop.jpg

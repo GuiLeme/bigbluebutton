@@ -2,6 +2,7 @@ import {
   EFFECT_TYPES,
   BLUR_FILENAME,
   createVirtualBackgroundStream,
+  getVirtualBackgroundEngine,
 } from '/imports/ui/services/virtual-background/service';
 import MediaStreamUtils from '/imports/utils/media-stream-utils';
 import { EventEmitter2 } from 'eventemitter2';
@@ -103,6 +104,16 @@ export default class BBBVideoStream extends EventEmitter2 {
   }
 
   startVirtualBackground(type, name = '', customParams) {
+    const engine = getVirtualBackgroundEngine();
+
+    // The engine was changed while an effect is running: the running service
+    // belongs to the other engine, so replace it instead of reusing it.
+    if (this.virtualBgService && this.virtualBgEngine !== engine) {
+      this.virtualBgService.stopEffect();
+      this.virtualBgService = null;
+      this.mediaStream = this.originalStream;
+    }
+
     if (this.virtualBgService) return this._changeVirtualBackground(type, name, customParams);
 
     return createVirtualBackgroundStream(
@@ -113,6 +124,7 @@ export default class BBBVideoStream extends EventEmitter2 {
       customParams,
     ).then(({ service, effect }) => {
       this.virtualBgService = service;
+      this.virtualBgEngine = engine;
       this.virtualBgType = type;
       this.virtualBgName = name;
       this.virtualBgUniqueId = customParams?.uniqueId;

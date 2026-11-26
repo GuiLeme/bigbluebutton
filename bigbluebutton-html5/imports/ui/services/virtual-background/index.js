@@ -14,6 +14,8 @@ import {
   MODELS,
   getVirtualBgImagePath,
 } from '/imports/ui/services/virtual-background/service'
+import { getVirtualBackgroundEngine } from '/imports/ui/services/virtual-background/service';
+import { createLongpipeVirtualBackgroundService } from '/imports/ui/services/virtual-background/longpipe';
 import logger from '/imports/startup/client/logger';
 
 import { simd } from 'wasm-feature-detect';
@@ -369,6 +371,19 @@ class VirtualBackgroundService {
      * @returns {VirtualBackgroundService}
      */
 export async function createVirtualBackgroundService(parameters = null) {
+    if (getVirtualBackgroundEngine() === 'longpipe') {
+        try {
+            return await createLongpipeVirtualBackgroundService(parameters);
+        } catch (error) {
+            logger.warn({
+                logCode: 'virtualbg_longpipe_load_failure',
+                extraInfo: { errorMessage: error.message },
+            }, `Longpipe failed to load, using TFLite: ${error.message}`);
+        }
+    }
+
+    window.bbbVirtualBackground = { engine: 'tflite' };
+
     let tflite;
     let modelResponse;
     const simdSupported = await simd();

@@ -11,6 +11,9 @@ import {
   getImageNames,
   getVirtualBackgroundThumbnail,
   isVirtualBackgroundSupported,
+  getVirtualBackgroundEngine,
+  setVirtualBackgroundEngine,
+  isVirtualBackgroundEngineSupported,
 } from '/imports/ui/services/virtual-background/service';
 import { ACTIONS, CustomVirtualBackgroundsContext } from './context';
 import VirtualBgService from '/imports/ui/components/video-preview/virtual-background/service';
@@ -95,6 +98,21 @@ const VirtualBgSelector = ({
       id: 'app.video.virtualBackground.button.customDesc',
       description: 'Aria description for upload virtual background button',
     },
+    engineLabel: {
+      id: 'app.video.virtualBackground.engine',
+      description: 'Label for the selector of what runs the virtual background',
+      defaultMessage: 'Background engine',
+    },
+    engineTflite: {
+      id: 'app.video.virtualBackground.engine.tflite',
+      description: 'Name of the TFLite (MediaPipe) virtual background engine',
+      defaultMessage: 'MediaPipe (TFLite)',
+    },
+    engineLongpipe: {
+      id: 'app.video.virtualBackground.engine.longpipe',
+      description: 'Name of the Longpipe virtual background engine',
+      defaultMessage: 'Longpipe',
+    },
     background: {
       id: 'app.video.virtualBackground.background',
       description: 'Label for the background word',
@@ -119,6 +137,8 @@ const VirtualBgSelector = ({
   const [currentVirtualBg, setCurrentVirtualBg] = useState({
     ...initialVirtualBgState,
   });
+
+  const [engine, setEngine] = useState(getVirtualBackgroundEngine());
 
   const inputElementsRef = useRef([]);
   const customBgSelectorRef = useRef(null);
@@ -174,6 +194,47 @@ const VirtualBgSelector = ({
 
       return null;
     });
+
+  // Switches what runs the effect, and applies the background in use again so
+  // it is the chosen engine that produces it.
+  const handleEngineChange = (event) => {
+    const nextEngine = event.target.value;
+    setVirtualBackgroundEngine(nextEngine);
+    setEngine(nextEngine);
+
+    const { type, name, uniqueId } = currentVirtualBg;
+    if (!type || type === EFFECT_TYPES.NONE_TYPE) return;
+
+    const customData = uniqueId ? backgrounds?.[uniqueId]?.data : undefined;
+    _virtualBgSelected(
+      type,
+      name,
+      null,
+      customData ? { file: customData, uniqueId } : undefined,
+    );
+  };
+
+  const renderEngineSelector = () => (
+    <Styled.EngineWrapper>
+      <Styled.Label htmlFor="virtualBgEngine">
+        {intl.formatMessage(intlMessages.engineLabel)}
+      </Styled.Label>
+      <Styled.Select
+        id="virtualBgEngine"
+        value={engine}
+        disabled={locked}
+        onChange={handleEngineChange}
+        data-test="virtualBgEngineSelect"
+      >
+        <option value="tflite" disabled={!isVirtualBackgroundEngineSupported('tflite')}>
+          {intl.formatMessage(intlMessages.engineTflite)}
+        </option>
+        <option value="longpipe">
+          {intl.formatMessage(intlMessages.engineLongpipe)}
+        </option>
+      </Styled.Select>
+    </Styled.EngineWrapper>
+  );
 
   const renderDropdownSelector = () => {
     const disabled = locked || !isVirtualBackgroundSupported();
@@ -491,6 +552,8 @@ const VirtualBgSelector = ({
 
   return (
     <>
+      {renderEngineSelector()}
+
       {renderSettingsLabel ? (
         <Styled.Label>
           {intl.formatMessage(

@@ -848,6 +848,13 @@ export interface VirtualBackgrounds {
   showThumbnails: boolean
   imagesPath: string
   thumbnailsPath: string
+  engine?: 'tflite' | 'longpipe'
+  longpipe?: {
+    weightsBaseUrl?: string
+    preset?: string
+    backend?: string
+    debug?: boolean
+  }
   fileNames: string[]
 }
 

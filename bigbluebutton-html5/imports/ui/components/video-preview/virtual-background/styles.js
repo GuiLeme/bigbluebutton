@@ -120,6 +120,12 @@ const Label = styled.label`
   color: ${colorGrayLabel};
 `;
 
+const EngineWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: ${lgPadding} ${lgPadding} 0;
+`;
+
 const ThumbnailButtonWrapper = styled.div`
   position: relative;
 `;
@@ -158,6 +164,7 @@ export default {
   ThumbnailButton,
   Select,
   Label,
+  EngineWrapper,
   ThumbnailButtonWrapper,
   ButtonWrapper,
   ButtonRemove,

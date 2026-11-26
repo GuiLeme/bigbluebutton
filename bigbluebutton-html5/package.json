@@ -108,6 +108,7 @@
     "immutability-helper": "~2.8.1",
     "langmap": "0.0.16",
     "livekit-client": "2.22.4",
+    "longpipe": "^0.0.23",
     "makeup-screenreader-trap": "0.0.5",
     "mermaid": "^11.17.2",
     "postcss-nested": "^7.0.2",

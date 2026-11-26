@@ -975,6 +975,8 @@ export const meetingClientSettingsInitialValues: MeetingClientSettings = {
       showThumbnails: true,
       imagesPath: '/resources/images/virtual-backgrounds/',
       thumbnailsPath: '/resources/images/virtual-backgrounds/thumbnails/',
+      engine: 'tflite',
+      longpipe: {},
       fileNames: [
         'home.jpg',
         'coffeeshop.jpg',
